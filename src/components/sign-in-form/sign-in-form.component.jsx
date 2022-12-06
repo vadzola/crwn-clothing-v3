@@ -1,56 +1,59 @@
-import { useState } from "react";
+import { useState} from "react";
 import {
+  signInWithGooglePopUp,
   signInAuthUserWithEmailAndPassword,
-  createUserDocumentFromAuth,
+ 
 } from "../../utils/firbase/firebase.utils";
 import FormInput from "../form-input/form-input.component";
 import Button from "../button/button.component";
-import { signInWithGooglePopUp } from "../../utils/firbase/firebase.utils";
+
+
 import "./sign-in-form.styles.scss";
 
 const defaultFormFields = {
- 
   email: "",
   password: "",
-  
 };
 
 const SignInForm = () => {
   const [formFields, setFormFields] = useState(defaultFormFields);
-  const {email, password } = formFields;
+  const { email, password } = formFields;
+
+  
 
   const resetFormFields = () => {
     setFormFields(defaultFormFields);
   };
-  
+
   const signInWithGoogle = async () => {
-    const {user} = await signInWithGooglePopUp();
-    await createUserDocumentFromAuth(user)
+   await signInWithGooglePopUp();
+   
     
-};
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    
     try {
-      const response = await signInAuthUserWithEmailAndPassword(email, password)
-      console.log(response)
+      await signInAuthUserWithEmailAndPassword(
+        email,
+        password
+      );
+      
+
       resetFormFields();
     } catch (error) {
       switch (error.code) {
-        case 'auth/wrong-password':
-          alert('wrong passwor')
-          break
-        case 'auth/user-not-found':
-          alert('incorect email for user')
-          break
+        case "auth/wrong-password":
+          alert("wrong passwor");
+          break;
+        case "auth/user-not-found":
+          alert("incorect email for user");
+          break;
         default:
-          console.log(error)
+          console.log(error);
       }
-
-
-    } 
+    }
   };
 
   const handleChange = (event) => {
@@ -63,8 +66,6 @@ const SignInForm = () => {
       <h2>Alredy have an account?</h2>
       <span>Sign in with your email and password</span>
       <form onSubmit={handleSubmit}>
-        
-
         <FormInput
           label="Email"
           type="email"
@@ -83,12 +84,11 @@ const SignInForm = () => {
           value={password}
         />
         <div className="buttons-container">
-
-
-        <Button  type="submit">Sign In</Button>
-        <Button type='button' buttonType='google'  onClick={signInWithGoogle} >Google sign in</Button>
+          <Button type="submit">Sign In</Button>
+          <Button type="button" buttonType="google" onClick={signInWithGoogle}>
+            Google sign in
+          </Button>
         </div>
-        
       </form>
     </div>
   );
